@@ -276,3 +276,8 @@ footer.site a{border-bottom:1px solid #C8BDAA;text-decoration:none;}
   object-fit:cover;
   object-position:center;
 }
+figure.store-shot img{
+  border:1px solid #E4DCCE;
+  background:#fff;
+}
+.store-pass{margin-top:1.2rem;margin-bottom:0;}
