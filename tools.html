@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Templates &amp; tools — Stanley J.</title>
+<meta name="description" content="Original writing and design samples by Stanley J. Demonstration work, not client projects.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wide">
+  <div class="top">
+    <a class="sj" href="index.html">Stanley J.</a>
+    <nav>
+      <a href="index.html">Work</a>
+      <a href="tidewell.html">Tidewell</a>
+      <a href="small-holding.html">The Small Holding</a>
+      <a href="millers-run.html">Miller’s Run</a>
+      <a href="scripts.html">Scripts</a>
+      <a href="tools.html" aria-current="page">Templates &amp; tools</a>
+      <a href="index.html#shopify-demo-stores">Stores</a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero">
+    <p class="kicker">Templates &amp; tools</p>
+    <h1>Notion templates, automation and a Pine Script sample</h1>
+    <p class="lede">Working tools I built and published myself. Free to look at and duplicate.</p>
+  </section>
+  <p class="kicker">Notion templates</p>
+  <h2>Freelancer CRM &amp; Invoice Tracker</h2>
+  <p class="intro">Clients, projects and invoices in linked databases, with paid/unpaid status, totals and a dashboard.</p>
+</div>
+<div class="wide"><figure class="store-shot"><img src="img/notion-crm-dashboard.jpg" width="1400" height="788" alt="Dashboard page of the Freelancer CRM Notion template."><figcaption>Dashboard view.</figcaption></figure></div>
+<div class="wrap">
+  <a class="more" href="https://youthful-lychee-f74.notion.site/Freelancer-CRM-Invoice-Tracker-418a8d8e6c3281499dbdf65348ee5b08" target="_blank" rel="noopener">Open the CRM (duplicate as template)</a>
+  <h2>Bilingual Project &amp; Content Planner (English / 中文)</h2>
+  <p class="intro">Projects, tasks and a content calendar with bilingual labels, a status board and a monthly view.</p>
+</div>
+<div class="wide"><figure class="store-shot"><img src="img/notion-planner-calendar.jpg" width="1400" height="788" alt="Calendar view of the bilingual planner Notion template."><figcaption>Calendar view.</figcaption></figure></div>
+<div class="wrap">
+  <a class="more" href="https://youthful-lychee-f74.notion.site/Project-Content-Planner-418a8d8e6c3281e18a66d192d394b2a1" target="_blank" rel="noopener">Open the planner (duplicate as template)</a>
+  <p class="fine">More on my Notion creator profile: <a href="https://app.notion.com/@stanleyj" target="_blank" rel="noopener">app.notion.com/@stanleyj</a></p>
+  <hr class="rule">
+  <p class="kicker">n8n automation</p>
+  <h2>n8n workflow templates</h2>
+  <p class="intro">Shopify and Google Sheets automations (order logging, low-stock alerts). Templates are published on my n8n creator page as they pass review.</p>
+  <a class="more" href="https://n8n.io/creators/stanleyj" target="_blank" rel="noopener">n8n creator page</a>
+  <hr class="rule">
+  <p class="kicker">TradingView Pine Script · sample</p>
+  <h2>Range &amp; Volume Expansion Highlighter</h2>
+  <p class="intro">Marks closed bars where range and volume are both unusually large versus the previous bar's baselines, with bar-close alerts. A charting and alert tool only: not financial advice, and no profit or accuracy is claimed.</p>
+</div>
+<div class="wide">
+<figure class="store-shot"><img src="img/chart_aapl_2h_6m.jpg" alt="The sample indicator on an AAPL 2-hour chart, with expansion markers and an info table."><figcaption>AAPL, 2-hour, 6 months.</figcaption></figure>
+<figure class="store-shot"><img src="img/chart_aapl_1d_1y.jpg" alt="The sample indicator on an AAPL daily chart."><figcaption>AAPL, daily, 1 year.</figcaption></figure>
+</div>
+<div class="wrap">
+  <a class="more" href="range-volume-expansion-sample.pine">Download the .pine source</a>
+  <pre style="overflow:auto;max-height:32em;font-size:.8em;background:#f4f1ea;padding:1em"><code>//@version=5
+// =============================================================================
+//  SAMPLE / PORTFOLIO PIECE by Stanley J. Original code, written as a demo.
+//  Range &amp; Volume Expansion Highlighter
+//
+//  What it does: marks closed bars where BOTH the bar&#x27;s range (high - low) is
+//  unusually large compared with the previous ATR, AND volume is unusually high
+//  compared with the previous average volume. It can colour those bars, label
+//  them, show a small info table, and fire an alert once the bar has closed.
+//
+//  What it does NOT do: it does not predict price, place trades or give buy/sell
+//  advice. It is a charting/alert tool. No profit or accuracy is claimed. Test
+//  it yourself before relying on it. Not financial advice.
+// =============================================================================
+indicator(&quot;Range &amp; Volume Expansion Highlighter [Sample]&quot;, shorttitle = &quot;RVX Sample&quot;, overlay = true, max_labels_count = 200)
+
+// ---- Inputs -----------------------------------------------------------------
+grpR      = &quot;Range&quot;
+atrLen    = input.int(14, &quot;ATR length&quot;, minval = 1, group = grpR)
+rngMult   = input.float(1.5, &quot;Range must be at least x ATR&quot;, minval = 0.1, step = 0.1, group = grpR)
+
+grpV      = &quot;Volume&quot;
+useVol    = input.bool(true, &quot;Require volume condition&quot;, group = grpV, tooltip = &quot;If the symbol has no volume data, the volume condition is skipped automatically.&quot;)
+volLen    = input.int(20, &quot;Average volume length&quot;, minval = 2, group = grpV)
+volMult   = input.float(2.0, &quot;Volume must be at least x average&quot;, minval = 0.1, step = 0.1, group = grpV)
+
+grpD      = &quot;Display&quot;
+colorBars = input.bool(true, &quot;Colour expansion bars&quot;, group = grpD)
+showMarks = input.bool(true, &quot;Show markers&quot;, group = grpD)
+showLbls  = input.bool(false, &quot;Show value labels&quot;, group = grpD)
+showTable = input.bool(true, &quot;Show info table&quot;, group = grpD)
+lookback  = input.int(100, &quot;Table: count expansion bars over last N bars&quot;, minval = 10, group = grpD)
+upCol     = input.color(color.new(color.teal, 0), &quot;Close &gt;= open colour&quot;, group = grpD)
+dnCol     = input.color(color.new(color.orange, 0), &quot;Close &lt; open colour&quot;, group = grpD)
+
+// ---- Calculations -------------------------------------------------------------
+// Baselines use the PREVIOUS bar&#x27;s ATR and average volume, so a large bar does not
+// inflate its own comparison.
+atrVal    = ta.atr(atrLen)
+avgVol    = ta.sma(volume, volLen)
+hasVolume = ta.cum(nz(volume)) &gt; 0
+
+barRange  = high - low
+relRng    = nz(atrVal[1]) &gt; 0 ? barRange / atrVal[1] : na
+relVol    = nz(avgVol[1]) &gt; 0 ? volume / avgVol[1] : na
+
+rngHit    = not na(relRng) and relRng &gt;= rngMult
+volHit    = not na(relVol) and relVol &gt;= volMult
+volOk     = not useVol or not hasVolume or volHit
+expansion = rngHit and volOk
+upClose   = close &gt;= open
+
+// ---- Visuals ------------------------------------------------------------------
+barcolor(colorBars and expansion ? (upClose ? upCol : dnCol) : na, title = &quot;Expansion bar colour&quot;)
+plotshape(showMarks and expansion and upClose, title = &quot;Expansion (close &gt;= open)&quot;, style = shape.triangleup, location = location.belowbar, color = upCol, size = size.tiny)
+plotshape(showMarks and expansion and not upClose, title = &quot;Expansion (close &lt; open)&quot;, style = shape.triangledown, location = location.abovebar, color = dnCol, size = size.tiny)
+
+// Values in the Data Window only (keeps the price scale clean)
+plot(relRng, &quot;Range / previous ATR&quot;, display = display.data_window)
+plot(relVol, &quot;Volume / previous average&quot;, display = display.data_window)
+
+if showLbls and expansion and barstate.isconfirmed
+    txt = &quot;Range x&quot; + str.tostring(relRng, &quot;#.0&quot;) + (hasVolume ? &quot;\nVol x&quot; + str.tostring(relVol, &quot;#.0&quot;) : &quot;&quot;)
+    label.new(bar_index, upClose ? low : high, txt, style = upClose ? label.style_label_up : label.style_label_down, color = color.new(upClose ? upCol : dnCol, 70), textcolor = chart.fg_color, size = size.small)
+
+// ---- Info table -------------------------------------------------------------
+var table info = table.new(position.top_right, 2, 4, bgcolor = color.new(chart.bg_color, 10), border_width = 1)
+countN = math.sum(expansion ? 1 : 0, lookback)
+if showTable and barstate.islast
+    table.cell(info, 0, 0, &quot;RVX Sample&quot;, text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 1, 0, useVol and not hasVolume ? &quot;no volume data: range only&quot; : &quot;&quot;, text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 0, 1, &quot;Range / prev ATR&quot;, text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 1, 1, na(relRng) ? &quot;-&quot; : str.tostring(relRng, &quot;#.00&quot;), text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 0, 2, &quot;Volume / prev avg&quot;, text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 1, 2, na(relVol) or not hasVolume ? &quot;-&quot; : str.tostring(relVol, &quot;#.00&quot;), text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 0, 3, &quot;Expansions, last &quot; + str.tostring(lookback), text_color = chart.fg_color, text_size = size.small)
+    table.cell(info, 1, 3, str.tostring(countN), text_color = chart.fg_color, text_size = size.small)
+
+// ---- Alerts -------------------------------------------------------------------
+// Option 1: classic alert condition (choose &quot;Once Per Bar Close&quot; when creating the alert).
+alertcondition(expansion, title = &quot;Range &amp; volume expansion&quot;, message = &quot;{{ticker}} {{interval}}: range/volume expansion on the closed bar (close {{close}})&quot;)
+
+// Option 2: dynamic message via alert() - create the alert with &quot;Any alert() function call&quot;.
+if expansion and barstate.isconfirmed
+    alert(syminfo.ticker + &quot; &quot; + timeframe.period + &quot;: expansion bar closed. Range x&quot; + str.tostring(relRng, &quot;#.0&quot;) + (hasVolume ? &quot;, volume x&quot; + str.tostring(relVol, &quot;#.0&quot;) : &quot;, no volume data&quot;), alert.freq_once_per_bar_close)
+</code></pre>
+</div>
+<div class="wrap">
+<footer class="site"><p>Stanley J. · Original demonstration work, not past client projects.</p></footer>
+</div>
+</body></html>
