@@ -1,4 +1,4 @@
-# Work samples — Stanley J.
+# Work samples
 
 Original writing and design samples: a fictional skincare brand (Tidewell), a fictional bottle shop (The Small Holding), a logo for a market coffee cart (Miller’s Run), short video scripts, and two Shopify demo stores (Eucalypt & Leaf Tea Co., and VoltNest Gadgets).
 

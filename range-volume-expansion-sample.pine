@@ -1,6 +1,6 @@
 //@version=5
 // =============================================================================
-//  SAMPLE / PORTFOLIO PIECE by Stanley J. Original code, written as a demo.
+//  SAMPLE / PORTFOLIO PIECE. Original code, written as a demo.
 //  Range & Volume Expansion Highlighter
 //
 //  What it does: marks closed bars where BOTH the bar's range (high - low) is
